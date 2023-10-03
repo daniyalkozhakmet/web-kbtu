@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { IUser } from "../../shared/interfaces/auth";
+
 import {
   metaType,
   productsDataType,
