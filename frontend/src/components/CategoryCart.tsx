@@ -1,4 +1,3 @@
-import React from "react";
 import { categoryType } from "../shared/interfaces/product";
 
 const CategoryCart = ({ category }: { category: categoryType }) => {
