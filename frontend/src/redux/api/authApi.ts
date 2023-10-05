@@ -59,6 +59,7 @@ const authApi = baseApi.injectEndpoints({
         headers: {
           Authorization: `Bearer ${getTokenFromLocalStorage()}`,
           Accept: `application/json`,
+          "Content-Type": `application/json`,
         },
       }),
 
@@ -66,11 +67,12 @@ const authApi = baseApi.injectEndpoints({
       //   transformResponse: (result: { data: IUser }) => result.data,
       async onQueryStarted(_, { dispatch }) {
         try {
-          console.log(getTokenFromLocalStorage());
           dispatch(logout());
-          //   localStorage.removeItem("user");
-          //   localStorage.removeItem("token");
-        } catch (error) {}
+          localStorage.removeItem("user");
+          localStorage.removeItem("token");
+        } catch (error) {
+          console.log(error);
+        }
       },
     }),
   }),

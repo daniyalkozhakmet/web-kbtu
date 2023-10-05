@@ -12,7 +12,6 @@ export const ProductByCategoryPage = () => {
   const { id } = useParams();
   const [searchParams] = useSearchParams();
   let name = searchParams.get("name");
-  console.log(name);
   const [getProductsByCategory, { isLoading, isSuccess, isError, error }] =
     useGetProductsByCategoryMutation();
   const { products, meta, categories } = useAppSelector(

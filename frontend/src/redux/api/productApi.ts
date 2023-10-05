@@ -1,5 +1,7 @@
 import { IUser } from "../../shared/interfaces/auth";
 import {
+  CommentType,
+  CreateCommentType,
   categoryType,
   metaType,
   productType,
@@ -35,8 +37,8 @@ const productApi = baseApi.injectEndpoints({
       },
     }),
     getProductById: builder.mutation({
-      query: (id: string) => ({
-        url: `/products/${id}`,
+      query: (data: { id: string; page?: number }) => ({
+        url: `/products/${data.id}?page=${data.page ?? 1}`,
         method: "GET",
         headers: {
           "Content-Type": `application/json`,
@@ -45,7 +47,12 @@ const productApi = baseApi.injectEndpoints({
         // responseHandler: (response) => response.text(),
       }),
       invalidatesTags: ["Products"],
-      transformResponse: (result: productType) => result,
+      transformResponse: (result: {
+        data: productType & {
+          comments: CommentType[];
+          meta: { current_page: number; total_page: number };
+        };
+      }) => result,
       async onQueryStarted(args, { dispatch, queryFulfilled }) {
         try {
           const { data } = await queryFulfilled;
@@ -91,9 +98,9 @@ const productApi = baseApi.injectEndpoints({
         } catch (error) {}
       },
     }),
-    logout: builder.mutation({
-      query: () => ({
-        url: "/logout",
+    createComment: builder.mutation({
+      query: (data: CreateCommentType & { product_id: string }) => ({
+        url: `/comment/${data.product_id}`,
         method: "POST",
         headers: {
           Authorization: `Bearer ${getTokenFromLocalStorage()}`,
@@ -101,7 +108,7 @@ const productApi = baseApi.injectEndpoints({
         },
       }),
 
-      invalidatesTags: ["Auth"],
+      invalidatesTags: ["Products"],
       //   transformResponse: (result: { data: IUser }) => result.data,
       async onQueryStarted(_, { dispatch }) {
         try {
@@ -116,7 +123,7 @@ const productApi = baseApi.injectEndpoints({
 });
 export const {
   useGetProductsMutation,
-  useLogoutMutation,
+  useCreateCommentMutation,
   useGetCategoriesMutation,
   useGetProductsByCategoryMutation,
   useGetProductByIdMutation,

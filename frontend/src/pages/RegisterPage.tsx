@@ -24,7 +24,6 @@ export const RegisterPage = () => {
   const submitHandler = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     register(user);
-    console.log(user);
 
     setUser({
       email: "",

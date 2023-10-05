@@ -16,8 +16,6 @@ const Pagination = ({
 }) => {
   const [getProducts] = useGetProductsMutation();
   const [getProductsByCategory] = useGetProductsByCategoryMutation();
-  console.log(meta);
-  console.log(categoryId);
   return (
     <nav
       aria-label="..."

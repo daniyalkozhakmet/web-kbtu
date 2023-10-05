@@ -2,6 +2,7 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 import {
   categoryType,
+  CommentType,
   metaType,
   productsDataType,
   productType,
@@ -11,7 +12,12 @@ import { setCartLocalStorage } from "../../utils/functions";
 interface IProductsState {
   products: productType[] | null;
   categories: categoryType[] | null;
-  product: productType | null;
+  product:
+    | (productType & {
+        comments: CommentType[];
+        meta: { total_page: number; current_page: number };
+      })
+    | null;
   cart: {
     products: (productType & { qty: number })[];
     totalPrice: number;
@@ -38,11 +44,18 @@ export const productSlice = createSlice({
       state.products = action.payload.data;
       state.meta = action.payload.meta;
     },
-    setProduct: (state, action: PayloadAction<{data:productType}>) => {
+    setProduct: (
+      state,
+      action: PayloadAction<{
+        data: productType & {
+          comments: CommentType[];
+          meta: { current_page: number; total_page: number };
+        };
+      }>
+    ) => {
       state.product = action.payload.data;
     },
     setCategories: (state, action: PayloadAction<{ data: categoryType[] }>) => {
-      console.log(action.payload);
       state.categories = action.payload.data;
     },
     setFromLocalStorage: (
@@ -89,20 +102,18 @@ export const productSlice = createSlice({
     unSetCart: (state, action: PayloadAction<{ id: number }>) => {
       let id = action.payload.id;
 
-        console.log('HERE')
-        state.cart.products = state.cart.products.filter(
-          (product) => product.id != id
-        );
-        state.cart.totalPrice = state.cart.products.reduce(
-          (acc, curr) => acc + curr.price * curr.qty,
-          0
-        );
-        state.cart.totalQty = state.cart.products.reduce(
-          (acc, curr) => acc + curr.qty,
-          0
-        );
-        setCartLocalStorage(state.cart);
-      
+      state.cart.products = state.cart.products.filter(
+        (product) => product.id != id
+      );
+      state.cart.totalPrice = state.cart.products.reduce(
+        (acc, curr) => acc + curr.price * curr.qty,
+        0
+      );
+      state.cart.totalQty = state.cart.products.reduce(
+        (acc, curr) => acc + curr.qty,
+        0
+      );
+      setCartLocalStorage(state.cart);
     },
     increaseQtyCart: (state, action: PayloadAction<{ id: number }>) => {
       let id = action.payload.id;

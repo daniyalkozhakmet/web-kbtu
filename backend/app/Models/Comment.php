@@ -8,6 +8,12 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Comment extends Model
 {
+    protected $fillable = [
+        'rating',
+        'body',
+        'user_id',
+        'product_id',
+    ];
     use HasFactory;
     public function product(): BelongsTo
     {

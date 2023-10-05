@@ -15,6 +15,11 @@ use Throwable;
 
 class ProductController extends Controller
 {
+    protected $comment;
+    public function __construct(CommentController $comment)
+    {
+        $this->comment = $comment;
+    }
     //
     public function getProducts()
     {
@@ -23,7 +28,7 @@ class ProductController extends Controller
             return ProductResource::collection($products);
         }
         $products = Cache::remember('products' . request('page', 1), 60 * 3, function () {
-            return Product::paginate(10);
+            return Product::paginate(10)->sortBy('created_at');
         });
 
         return ProductResource::collection($products);
@@ -32,6 +37,7 @@ class ProductController extends Controller
     {
         try {
             $product = Product::where('id', $id)->first();
+            // $product->comments = $this->comment->getCommentByProduct($product->id);
             return new ProductWithCommentResource($product);
         } catch (Exception $e) {
             $this->error_handler('Product with that id does not exist', 400);

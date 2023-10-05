@@ -20,6 +20,6 @@ class Product extends Model
     }
     public function getRatingAttribute()
     {
-    return 5;
+        return $this->comments()->exists() ? $this->comments()->get()->sum('rating') / $this->comments()->get()->count() : 5;
     }
 }

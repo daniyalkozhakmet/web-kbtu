@@ -15,12 +15,18 @@ import {
 import { BsPlusCircle } from "react-icons/bs";
 import { AiOutlineMinusCircle } from "react-icons/ai";
 import { productType } from "../shared/interfaces/product";
+import {
+  CommentComponent,
+  CommentPaginator,
+} from "../components/comment/CommentComponent";
+import CreateComment from "../components/comment/CreateComment";
 
 export const ProductPage = () => {
   const { id } = useParams();
   const [getProductById, { isLoading, isError, error, isSuccess }] =
     useGetProductByIdMutation();
   const { product } = useAppSelector((state) => state.product);
+  const { user } = useAppSelector((state) => state.user);
   let content;
   const {
     cart: { products },
@@ -43,9 +49,12 @@ export const ProductPage = () => {
 
   useEffect(() => {
     setLike(products.some((p) => (p.id == product?.id ? true : false)));
-    setQty(products.find((p) => p.id == Number(id)) ? products.find((p) => p.id == Number(id))?.qty : 1)
+    setQty(
+      products.find((p) => p.id == Number(id))
+        ? products.find((p) => p.id == Number(id))?.qty
+        : 1
+    );
     productFromCart = products.find((p) => p.id == Number(id));
-    console.log("productFromCart", productFromCart);
   }, [products, product]);
 
   if (isLoading)
@@ -116,11 +125,21 @@ export const ProductPage = () => {
             />
           </div>
         </div>
+        {user && <CreateComment />}
+
+        {product.comments.length > 0 && id && (
+          <div className="mb-5">
+            <CommentComponent comments={product.comments} />
+            {product.meta.total_page > 1 && (
+              <CommentPaginator meta={product.meta} productId={id} />
+            )}
+          </div>
+        )}
       </div>
     );
   }
   useEffect(() => {
-    if (id) getProductById(id);
+    if (id) getProductById({ id });
   }, [id]);
 
   return <div className="container">{content}</div>;

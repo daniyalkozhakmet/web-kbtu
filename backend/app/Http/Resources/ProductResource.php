@@ -19,7 +19,7 @@ class ProductResource extends JsonResource
             'name' => $this->name,
             'image' => $this->image,
             'price' => $this->price,
-            'rating' => $this->comments()->exists() ? $this->comments()->get()->sum('rating')/$this->comments()->get()->count() : 5,
+            'rating' => $this->rating,
             'description' => $this->description,
             'categories' => CategoryResource::collection($this->categories)
         ];

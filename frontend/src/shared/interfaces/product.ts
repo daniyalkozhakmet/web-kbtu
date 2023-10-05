@@ -28,3 +28,13 @@ export type metaType = {
 export type linkType = {
   url: string;
 };
+export type CommentType = {
+  body: string;
+  rating: number;
+  user: string;
+};
+
+export type CreateCommentType = {
+  body: string;
+  rating: number;
+};
