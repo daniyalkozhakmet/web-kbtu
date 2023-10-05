@@ -5,7 +5,7 @@ namespace App\Http\Resources;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class ProductResource extends JsonResource
+class ProductWithCommentResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -21,7 +21,8 @@ class ProductResource extends JsonResource
             'price' => $this->price,
             'rating' => $this->comments()->exists() ? $this->comments()->get()->sum('rating')/$this->comments()->get()->count() : 5,
             'description' => $this->description,
-            'categories' => CategoryResource::collection($this->categories)
+            'categories' => CategoryResource::collection($this->categories),
+            'comments' => CommentResource::collection($this->comments)
         ];
     }
 }

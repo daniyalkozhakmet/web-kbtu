@@ -40,7 +40,7 @@ class AuthController extends Controller
     }
     public function register(StoreUserRequest $request)
     {
-        $request->validated($request->only(['firstName','lastName', 'email', 'password']));
+        $request->validated($request->only(['firstName', 'lastName', 'email', 'password']));
 
         $user = User::create([
             'firstName' => $request->firstName,
@@ -57,7 +57,7 @@ class AuthController extends Controller
     public function logout(Request $request)
     {
 
-    $request->user()->tokens()->delete();
+        $request->user()->tokens()->delete();
 
         return $this->success([
             'message' => 'You have succesfully been logged out and your token has been removed'
@@ -69,14 +69,15 @@ class AuthController extends Controller
         return 'Hello admin';
     }
 
-    public function refresh(Request $request){
+    public function refresh(Request $request)
+    {
         if (empty($token = $request->header('Authorization'))) {
             return response()->json(['message' => 'Token is invalid'], 422);
         }
-    
+
         $token = explode('Bearer ', $token);
 
-        if(empty($token[1]) || empty($token = PersonalAccessToken::findToken($token[1]))) {
+        if (empty($token[1]) || empty($token = PersonalAccessToken::findToken($token[1]))) {
             return response()->json(['message' => 'Token is invalid'], 422);
         }
         if (!$token->tokenable instanceof User) {

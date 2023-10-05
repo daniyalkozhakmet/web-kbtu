@@ -55,7 +55,7 @@ export const Home = () => {
           ))}
         </div>
 
-        {meta && <Pagination meta={meta} />}
+        {meta && <Pagination meta={meta} paginateWhat="products"/>}
       </>
     );
   return (

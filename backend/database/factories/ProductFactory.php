@@ -20,7 +20,7 @@ class ProductFactory extends Factory
         return [
             'name' => fake()->name(),
             'price' => fake()->biasedNumberBetween($min = 10, $max = 200, $function = 'sqrt'),
-            'rating' => fake()->biasedNumberBetween($min = 1, $max = 5, $function = 'sqrt'),
+            // 'rating' => fake()->biasedNumberBetween($min = 1, $max = 5, $function = 'sqrt'),
             'description' => fake()->paragraph(),
         ];
     }

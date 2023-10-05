@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('name');
             $table->float('price');
             $table->string('image');
-            $table->float('rating')->default(5);
+            // $table->float('rating')->default(5);
             $table->text('description');
             $table->timestamps();
         });

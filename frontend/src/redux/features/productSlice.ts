@@ -11,6 +11,7 @@ import { setCartLocalStorage } from "../../utils/functions";
 interface IProductsState {
   products: productType[] | null;
   categories: categoryType[] | null;
+  product: productType | null;
   cart: {
     products: (productType & { qty: number })[];
     totalPrice: number;
@@ -22,6 +23,8 @@ interface IProductsState {
 
 const initialState: IProductsState = {
   products: null,
+  product: null,
+
   categories: null,
   cart: { products: [], totalPrice: 0, totalSum: 0, totalQty: 0 },
   meta: null,
@@ -35,8 +38,11 @@ export const productSlice = createSlice({
       state.products = action.payload.data;
       state.meta = action.payload.meta;
     },
-    setCategories: (state, action: PayloadAction<{data:categoryType[]}>) => {
-      console.log(action.payload)
+    setProduct: (state, action: PayloadAction<{data:productType}>) => {
+      state.product = action.payload.data;
+    },
+    setCategories: (state, action: PayloadAction<{ data: categoryType[] }>) => {
+      console.log(action.payload);
       state.categories = action.payload.data;
     },
     setFromLocalStorage: (
@@ -82,7 +88,8 @@ export const productSlice = createSlice({
     },
     unSetCart: (state, action: PayloadAction<{ id: number }>) => {
       let id = action.payload.id;
-      if (state.products) {
+
+        console.log('HERE')
         state.cart.products = state.cart.products.filter(
           (product) => product.id != id
         );
@@ -95,7 +102,7 @@ export const productSlice = createSlice({
           0
         );
         setCartLocalStorage(state.cart);
-      }
+      
     },
     increaseQtyCart: (state, action: PayloadAction<{ id: number }>) => {
       let id = action.payload.id;
@@ -143,4 +150,5 @@ export const {
   decreaseQtyCart,
   setFromLocalStorage,
   setCategories,
+  setProduct,
 } = productSlice.actions;

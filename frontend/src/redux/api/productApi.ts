@@ -5,7 +5,11 @@ import {
   productType,
   productsDataType,
 } from "../../shared/interfaces/product";
-import { setCategories, setProducts } from "../features/productSlice";
+import {
+  setCategories,
+  setProduct,
+  setProducts,
+} from "../features/productSlice";
 import { logout, setUser } from "../features/userSlice";
 import { baseApi, getTokenFromLocalStorage } from "./baseApi";
 
@@ -30,6 +34,25 @@ const productApi = baseApi.injectEndpoints({
         } catch (error) {}
       },
     }),
+    getProductById: builder.mutation({
+      query: (id: string) => ({
+        url: `/products/${id}`,
+        method: "GET",
+        headers: {
+          "Content-Type": `application/json`,
+          Accept: `application/json`,
+        },
+        // responseHandler: (response) => response.text(),
+      }),
+      invalidatesTags: ["Products"],
+      transformResponse: (result: productType) => result,
+      async onQueryStarted(args, { dispatch, queryFulfilled }) {
+        try {
+          const { data } = await queryFulfilled;
+          dispatch(setProduct(data));
+        } catch (error) {}
+      },
+    }),
     getCategories: builder.mutation({
       query: (page = 1) => ({
         url: `/categories?page=${page}`,
@@ -41,12 +64,30 @@ const productApi = baseApi.injectEndpoints({
         // responseHandler: (response) => response.text(),
       }),
       invalidatesTags: ["Products"],
-      transformResponse: (result: {data:categoryType[]}) => result,
+      transformResponse: (result: { data: categoryType[] }) => result,
       async onQueryStarted(args, { dispatch, queryFulfilled }) {
         try {
           const { data } = await queryFulfilled;
-          console.log(data)
           dispatch(setCategories(data));
+        } catch (error) {}
+      },
+    }),
+    getProductsByCategory: builder.mutation({
+      query: (params: { id: number; page?: number }) => ({
+        url: `/categories/${params.id}?page=${params.page || 1}`,
+        method: "GET",
+        headers: {
+          "Content-Type": `application/json`,
+          Accept: `application/json`,
+        },
+        // responseHandler: (response) => response.text(),
+      }),
+      invalidatesTags: ["Products"],
+      transformResponse: (result: productsDataType) => result,
+      async onQueryStarted(args, { dispatch, queryFulfilled }) {
+        try {
+          const { data } = await queryFulfilled;
+          dispatch(setProducts(data));
         } catch (error) {}
       },
     }),
@@ -64,7 +105,6 @@ const productApi = baseApi.injectEndpoints({
       //   transformResponse: (result: { data: IUser }) => result.data,
       async onQueryStarted(_, { dispatch }) {
         try {
-          console.log(getTokenFromLocalStorage());
           dispatch(logout());
           //   localStorage.removeItem("user");
           //   localStorage.removeItem("token");
@@ -74,4 +114,10 @@ const productApi = baseApi.injectEndpoints({
   }),
   overrideExisting: false,
 });
-export const { useGetProductsMutation, useLogoutMutation ,useGetCategoriesMutation} = productApi;
+export const {
+  useGetProductsMutation,
+  useLogoutMutation,
+  useGetCategoriesMutation,
+  useGetProductsByCategoryMutation,
+  useGetProductByIdMutation,
+} = productApi;

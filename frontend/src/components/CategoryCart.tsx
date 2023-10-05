@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import { categoryType } from "../shared/interfaces/product";
 
 const CategoryCart = ({ category }: { category: categoryType }) => {
@@ -10,9 +11,12 @@ const CategoryCart = ({ category }: { category: categoryType }) => {
       />
       <div className="card-body">
         <h5 className="card-title">{category.name}</h5>
-        <a href="#" className="btn btn-primary">
+        <Link
+          to={`categories/${category.id}?name=${category.name}`}
+          className="btn btn-primary"
+        >
           Products
-        </a>
+        </Link>
       </div>
     </div>
   );

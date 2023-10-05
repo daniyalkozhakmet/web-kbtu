@@ -22,6 +22,7 @@ Route::get('/refresh', [AuthController::class, 'refresh']);
 
 Route::prefix('products')->group(function () {
     Route::get('/',[ProductController::class,'getProducts'] );
+    Route::get('/{id}',[ProductController::class,'getProductById'] );
 });
 Route::prefix('categories')->group(function () {
     Route::get('/{id}',[CategoryController::class,'getProductsByCategory'] );

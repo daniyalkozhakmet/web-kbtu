@@ -8,6 +8,8 @@ import {
 } from "react-icons/ai";
 import { useAppDispatch, useAppSelector } from "../hooks/userHook";
 import { setCart, unSetCart } from "../redux/features/productSlice";
+import { Link } from "react-router-dom";
+import { Rating } from "./Rating";
 
 export const ProductCard = ({ product }: { product: productType }) => {
   const {
@@ -35,17 +37,7 @@ export const ProductCard = ({ product }: { product: productType }) => {
         <h5 className="card-title">{product.name}</h5>
         {/* <p className="card-text">{product.description.substring(0, 50)}</p> */}
         <div className="d-flex justify-content-between align-items-center my-1">
-          <span>
-            {Array(5)
-              .fill(0)
-              .map((el, index) =>
-                product.rating < index + 1 ? (
-                  <AiOutlineStar key={index} size={20} />
-                ) : (
-                  <AiFillStar key={index} color="orange" size={20} />
-                )
-              )}
-          </span>
+          <Rating rating={product.rating} />
           <span onClick={() => addToCartHandler(product.id)}>
             {like ? (
               <AiFillHeart color="red" size={20} />
@@ -55,9 +47,9 @@ export const ProductCard = ({ product }: { product: productType }) => {
           </span>
         </div>
         <div className="d-flex justify-content-between align-items-center">
-          <a href="#" className="btn btn-primary">
+          <Link to={`/products/${product.id}`} className="btn btn-primary">
             View
-          </a>
+          </Link>
           <span className="bg-warning text-black p-1 rounded">
             {product.price} $
           </span>

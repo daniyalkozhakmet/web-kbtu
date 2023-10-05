@@ -5,7 +5,7 @@ export const Layout = () => {
   return (
     <>
       <Navbar />
-      <main className="App" style={{height:"100vh"}}>
+      <main className="App" style={{height:"100vh",marginTop:"80px"}}>
         <Outlet />
       </main>
     </>
