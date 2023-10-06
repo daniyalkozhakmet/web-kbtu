@@ -1,7 +1,10 @@
 import React from "react";
 import { CommentType } from "../../shared/interfaces/product";
 import { Rating } from "../Rating";
-import { useGetProductByIdMutation } from "../../redux/api/productApi";
+import {
+  useGetProductByIdQuery,
+  useLazyGetProductByIdQuery,
+} from "../../redux/api/productApi";
 
 export const CommentComponent = ({ comments }: { comments: CommentType[] }) => {
   return (
@@ -25,7 +28,7 @@ export const CommentPaginator = ({
   meta: { total_page: number; current_page: number };
   productId: string;
 }) => {
-  const [getProductById] = useGetProductByIdMutation();
+  const [getProductById] = useLazyGetProductByIdQuery();
   return (
     <>
       <nav

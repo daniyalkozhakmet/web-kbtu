@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { useParams, useSearchParams } from "react-router-dom";
-import { useGetProductsByCategoryMutation } from "../redux/api/productApi";
+import { useLazyGetProductsByCategoryQuery } from "../redux/api/productApi";
 import { Spinner } from "../components/Spinner";
 import Alert from "../components/Alert";
 import { useAppSelector } from "../hooks/userHook";
@@ -13,7 +13,7 @@ export const ProductByCategoryPage = () => {
   const [searchParams] = useSearchParams();
   let name = searchParams.get("name");
   const [getProductsByCategory, { isLoading, isSuccess, isError, error }] =
-    useGetProductsByCategoryMutation();
+    useLazyGetProductsByCategoryQuery();
   const { products, meta, categories } = useAppSelector(
     (state) => state.product
   );

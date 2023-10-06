@@ -6,10 +6,10 @@ import { RegisterPage } from "./pages/RegisterPage";
 import { Layout } from "./components/Layout";
 import { ProductByCategoryPage } from "./pages/ProductsByCategoryPage";
 import { ProductPage } from "./pages/ProductPage";
-import { useGetProductsMutation } from "./redux/api/productApi";
+import { useLazyGetProductsQuery } from "./redux/api/productApi";
 
 function App() {
-  const [getProducts] = useGetProductsMutation();
+  const [getProducts] = useLazyGetProductsQuery();
   useEffect(() => {
     getProducts("");
   }, []);

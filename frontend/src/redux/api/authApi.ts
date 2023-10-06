@@ -15,7 +15,7 @@ const authApi = baseApi.injectEndpoints({
         },
         // responseHandler: (response) => response.text(),
       }),
-      invalidatesTags: ["Auth"],
+
       transformResponse: (result: { data: IUser }) => result.data,
       async onQueryStarted(args, { dispatch, queryFulfilled }) {
         try {
@@ -63,13 +63,11 @@ const authApi = baseApi.injectEndpoints({
         },
       }),
 
-      invalidatesTags: ["Auth"],
-      //   transformResponse: (result: { data: IUser }) => result.data,
+
+      // transformResponse: (result) => console.log(result),
       async onQueryStarted(_, { dispatch }) {
         try {
           dispatch(logout());
-          localStorage.removeItem("user");
-          localStorage.removeItem("token");
         } catch (error) {
           console.log(error);
         }

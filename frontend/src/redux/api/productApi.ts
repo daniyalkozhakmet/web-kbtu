@@ -17,7 +17,7 @@ import { baseApi, getTokenFromLocalStorage } from "./baseApi";
 
 const productApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
-    getProducts: builder.mutation({
+    getProducts: builder.query({
       query: (page = 1) => ({
         url: `/products?page=${page}`,
         method: "GET",
@@ -27,7 +27,6 @@ const productApi = baseApi.injectEndpoints({
         },
         // responseHandler: (response) => response.text(),
       }),
-      invalidatesTags: ["Products"],
       transformResponse: (result: productsDataType) => result,
       async onQueryStarted(args, { dispatch, queryFulfilled }) {
         try {
@@ -36,7 +35,7 @@ const productApi = baseApi.injectEndpoints({
         } catch (error) {}
       },
     }),
-    getProductById: builder.mutation({
+    getProductById: builder.query({
       query: (data: { id: string; page?: number }) => ({
         url: `/products/${data.id}?page=${data.page ?? 1}`,
         method: "GET",
@@ -44,23 +43,23 @@ const productApi = baseApi.injectEndpoints({
           "Content-Type": `application/json`,
           Accept: `application/json`,
         },
-        // responseHandler: (response) => response.text(),
       }),
-      invalidatesTags: ["Products"],
       transformResponse: (result: {
         data: productType & {
           comments: CommentType[];
           meta: { current_page: number; total_page: number };
         };
       }) => result,
+      providesTags: [{ type: "SingleProduct", id: "id" }],
       async onQueryStarted(args, { dispatch, queryFulfilled }) {
         try {
           const { data } = await queryFulfilled;
+          console.log(data);
           dispatch(setProduct(data));
         } catch (error) {}
       },
     }),
-    getCategories: builder.mutation({
+    getCategories: builder.query({
       query: (page = 1) => ({
         url: `/categories?page=${page}`,
         method: "GET",
@@ -70,7 +69,6 @@ const productApi = baseApi.injectEndpoints({
         },
         // responseHandler: (response) => response.text(),
       }),
-      invalidatesTags: ["Products"],
       transformResponse: (result: { data: categoryType[] }) => result,
       async onQueryStarted(args, { dispatch, queryFulfilled }) {
         try {
@@ -79,7 +77,7 @@ const productApi = baseApi.injectEndpoints({
         } catch (error) {}
       },
     }),
-    getProductsByCategory: builder.mutation({
+    getProductsByCategory: builder.query({
       query: (params: { id: number; page?: number }) => ({
         url: `/categories/${params.id}?page=${params.page || 1}`,
         method: "GET",
@@ -89,32 +87,31 @@ const productApi = baseApi.injectEndpoints({
         },
         // responseHandler: (response) => response.text(),
       }),
-      invalidatesTags: ["Products"],
       transformResponse: (result: productsDataType) => result,
       async onQueryStarted(args, { dispatch, queryFulfilled }) {
         try {
           const { data } = await queryFulfilled;
+          console.log("Helllo");
           dispatch(setProducts(data));
-        } catch (error) {}
+        } catch (error) {
+          console.log(error);
+        }
       },
     }),
     createComment: builder.mutation({
       query: (data: CreateCommentType & { product_id: string }) => ({
         url: `/comment/${data.product_id}`,
         method: "POST",
+        body: data,
         headers: {
           Authorization: `Bearer ${getTokenFromLocalStorage()}`,
           Accept: `application/json`,
+          "Content-Type": `application/json`,
         },
       }),
-
-      invalidatesTags: ["Products"],
-      //   transformResponse: (result: { data: IUser }) => result.data,
+      invalidatesTags: [{ type: "SingleProduct", id: "id" }],
       async onQueryStarted(_, { dispatch }) {
         try {
-          dispatch(logout());
-          //   localStorage.removeItem("user");
-          //   localStorage.removeItem("token");
         } catch (error) {}
       },
     }),
@@ -122,9 +119,14 @@ const productApi = baseApi.injectEndpoints({
   overrideExisting: false,
 });
 export const {
-  useGetProductsMutation,
+  useGetProductsQuery,
+  useLazyGetProductsQuery,
   useCreateCommentMutation,
-  useGetCategoriesMutation,
-  useGetProductsByCategoryMutation,
-  useGetProductByIdMutation,
+  useGetCategoriesQuery,
+  useLazyGetCategoriesQuery,
+
+  useGetProductsByCategoryQuery,
+  useLazyGetProductsByCategoryQuery,
+  useGetProductByIdQuery,
+  useLazyGetProductByIdQuery,
 } = productApi;

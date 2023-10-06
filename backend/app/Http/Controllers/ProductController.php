@@ -28,7 +28,7 @@ class ProductController extends Controller
             return ProductResource::collection($products);
         }
         $products = Cache::remember('products' . request('page', 1), 60 * 3, function () {
-            return Product::paginate(10)->sortBy('created_at');
+            return Product::paginate(10);
         });
 
         return ProductResource::collection($products);

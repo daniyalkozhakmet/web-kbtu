@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { CreateCommentType } from "../../shared/interfaces/product";
 import { useCreateCommentMutation } from "../../redux/api/productApi";
 import { useParams } from "react-router-dom";
@@ -21,6 +21,11 @@ const CreateComment = () => {
     }
     console.log(comment);
   };
+  useEffect(() => {
+    if (isError) {
+      console.log(error);
+    }
+  }, [error]);
   return (
     <div className="my-2">
       <h3>Leave a comment</h3>
@@ -47,6 +52,7 @@ const CreateComment = () => {
             className="form-control"
             id="exampleFormControlTextarea1"
             rows={3}
+            value={comment.body}
             onChange={(e) => setComment({ ...comment, body: e.target.value })}
           ></textarea>
         </div>

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
-import { useGetProductByIdMutation } from "../redux/api/productApi";
+import { useGetProductByIdQuery } from "../redux/api/productApi";
 import Alert from "../components/Alert";
 import { Spinner } from "../components/Spinner";
 import { useAppDispatch, useAppSelector } from "../hooks/userHook";
@@ -23,8 +23,11 @@ import CreateComment from "../components/comment/CreateComment";
 
 export const ProductPage = () => {
   const { id } = useParams();
-  const [getProductById, { isLoading, isError, error, isSuccess }] =
-    useGetProductByIdMutation();
+
+  const { isLoading, isError, error, isSuccess } = useGetProductByIdQuery({
+    id,
+  });
+
   const { product } = useAppSelector((state) => state.product);
   const { user } = useAppSelector((state) => state.user);
   let content;
@@ -138,9 +141,9 @@ export const ProductPage = () => {
       </div>
     );
   }
-  useEffect(() => {
-    if (id) getProductById({ id });
-  }, [id]);
+  // useEffect(() => {
+  //   if (id) getProductById({ id });
+  // }, [id]);
 
   return <div className="container">{content}</div>;
 };

@@ -1,8 +1,10 @@
 import React from "react";
 import { metaType } from "../shared/interfaces/product";
 import {
-  useGetProductsByCategoryMutation,
-  useGetProductsMutation,
+
+  useLazyGetCategoriesQuery,
+  useLazyGetProductsByCategoryQuery,
+  useLazyGetProductsQuery,
 } from "../redux/api/productApi";
 
 const Pagination = ({
@@ -14,8 +16,8 @@ const Pagination = ({
   paginateWhat: string;
   categoryId?: string;
 }) => {
-  const [getProducts] = useGetProductsMutation();
-  const [getProductsByCategory] = useGetProductsByCategoryMutation();
+  const [getProducts] = useLazyGetProductsQuery();
+  const [getProductsByCategory] = useLazyGetProductsByCategoryQuery();
   return (
     <nav
       aria-label="..."
@@ -34,7 +36,7 @@ const Pagination = ({
                 paginateWhat == "products"
                   ? getProducts(index + 1)
                   : getProductsByCategory({
-                      id: Number(categoryId ? categoryId : 1),
+                      id: Number(categoryId),
                       page: index + 1,
                     })
               }

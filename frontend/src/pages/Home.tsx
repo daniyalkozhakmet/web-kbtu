@@ -1,8 +1,8 @@
 import React, { useEffect } from "react";
 import Navbar from "../components/Navbar";
 import {
-  useGetCategoriesMutation,
-  useGetProductsMutation,
+  useGetCategoriesQuery,
+  useGetProductsQuery,
 } from "../redux/api/productApi";
 import { Spinner } from "../components/Spinner";
 import Alert from "../components/Alert";
@@ -13,18 +13,16 @@ import { CartCanvas } from "../components/CartCanvas";
 import CategoryCart from "../components/CategoryCart";
 
 export const Home = () => {
-  const [getProducts, { isLoading, isError, error, isSuccess }] =
-    useGetProductsMutation();
-  const [getCategories, { isLoading:isLoadingCategory, isError:isErrorCategory, error:errorCategory, isSuccess:isSuccessCategory }] =
-    useGetCategoriesMutation();
+  const { isLoading, isError, error, isSuccess } = useGetProductsQuery("");
+  const {
+    isLoading: isLoadingCategory,
+    isError: isErrorCategory,
+    error: errorCategory,
+    isSuccess: isSuccessCategory,
+  } = useGetCategoriesQuery("");
   const { products, meta, categories } = useAppSelector(
     (state) => state.product
   );
-  useEffect(() => {
-    getCategories("");
-    getProducts("");
-
-  }, []);
   let content;
   if (isLoading || isLoadingCategory)
     content = (
@@ -32,8 +30,9 @@ export const Home = () => {
         <Spinner />
       </div>
     );
-  if (isError ) content = <Alert message={error as string} className="danger" />;
-  if (isErrorCategory ) content = <Alert message={errorCategory as string} className="danger" />;
+  if (isError) content = <Alert message={error as string} className="danger" />;
+  if (isErrorCategory)
+    content = <Alert message={errorCategory as string} className="danger" />;
   if (isSuccess && isSuccessCategory)
     content = (
       <>
@@ -44,7 +43,6 @@ export const Home = () => {
               <CategoryCart category={category} />
             </div>
           ))}
-
         </div>
         <h1 className="my-4">Products</h1>
         <div className="row g-2">
@@ -55,7 +53,7 @@ export const Home = () => {
           ))}
         </div>
 
-        {meta && <Pagination meta={meta} paginateWhat="products"/>}
+        {meta && <Pagination meta={meta} paginateWhat="products" />}
       </>
     );
   return (
