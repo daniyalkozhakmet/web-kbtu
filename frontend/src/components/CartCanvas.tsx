@@ -6,6 +6,7 @@ import {
   decreaseQtyCart,
   increaseQtyCart,
 } from "../redux/features/productSlice";
+import { Link } from "react-router-dom";
 export const CartCanvas = () => {
   const dispatch = useAppDispatch();
   const {
@@ -36,14 +37,31 @@ export const CartCanvas = () => {
         ></button>
       </div>
       <div className="offcanvas-body">
-        <h4>Total price: {totalPrice} $</h4>
+        <div className="d-flex justify-content-between align-items-center mb-3">
+          <h4>Total price: {totalPrice} $</h4>
+          <Link to="/cart">
+            <button
+              data-bs-dismiss="offcanvas"
+              className="btn btn-outline-primary"
+              aria-label="Close"
+            >
+              Go to cart
+            </button>
+          </Link>
+        </div>
+
         {products.map((product) => (
           <div className="card my-1" key={product.id}>
             <div className="card-body">
               <h5 className="card-title">{product.name}</h5>
               <div className="d-flex justify-content-between align-items-center">
                 <div>
-                  <img src={`http://127.0.0.1:8000/${product.image}`} height={100} width={130}  style={{ objectFit: "cover" }}/>
+                  <img
+                    src={`http://127.0.0.1:8000/${product.image}`}
+                    height={100}
+                    width={130}
+                    style={{ objectFit: "cover" }}
+                  />
                 </div>
                 <div className="my-1">
                   <span className="d-flex justify-content-between align-items-center my-1">

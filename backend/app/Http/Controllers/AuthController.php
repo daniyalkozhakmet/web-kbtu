@@ -8,6 +8,7 @@ use App\Http\Resources\UserResource;
 use App\Models\Role;
 use App\Models\User;
 use App\Traits\HttpResponses;
+use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\Request;
 
 use Illuminate\Support\Facades\Auth;
@@ -30,6 +31,7 @@ class AuthController extends Controller
         }
 
         $user = User::where('email', $request->email)->first();
+        // event(new Registered($user));
         return new UserResource($user);
         // return $this->success([
         //     'user' => $user,
@@ -47,8 +49,9 @@ class AuthController extends Controller
             'lastName' => $request->lastName,
             'email' => $request->email,
             'password' => Hash::make($request->password),
-        ]);
+        ])->sendEmailVerificationNotification();
         $user->roles()->attach(Role::where('name', 'USER')->first());
+        event(new Registered($user));
         return new UserResource($user);
     }
     /**

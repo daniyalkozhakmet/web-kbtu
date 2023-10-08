@@ -1,7 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import Alert from "../components/Alert";
-import { useRegisterMutation } from "../redux/api/authApi";
+import {
+  useLazyVerifyEmailQuery,
+  useRegisterMutation,
+} from "../redux/api/authApi";
+import { useAppSelector } from "../hooks/userHook";
 type userType = {
   email: string;
   password: string;
@@ -12,6 +16,17 @@ type userType = {
 export const RegisterPage = () => {
   const [register, { isLoading, isError, error, isSuccess }] =
     useRegisterMutation();
+  const { user: userState } = useAppSelector((state) => state.user);
+  const [
+    verifyEmail,
+    {
+      data: dataEmail,
+      isLoading: isLoadingEmail,
+      error: errorEmail,
+      isError: isErrorEmail,
+      isSuccess: isSuccessEmail,
+    },
+  ] = useLazyVerifyEmailQuery();
   const navigate = useNavigate();
   const [user, setUser] = useState<userType>({
     email: "",
@@ -73,7 +88,19 @@ export const RegisterPage = () => {
     }
   }, [isLoading]);
   useEffect(() => {
-    if (isSuccess) navigate("/");
+    if (isSuccess) {
+      if (userState?.verified == false) {
+        console.log("Not verified", !userState?.verified);
+        verifyEmail("");
+        // localStorage.removeItem("us ser");
+        // localStorage.removeItem("token");
+        // dispatch(logout());
+
+        alert("We send verification link to your email, please verify");
+      } else {
+        navigate("/");
+      }
+    }
   }, [isSuccess]);
   return (
     <div className="container w-75 my-4">

@@ -26,15 +26,27 @@ const baseQueryWithReauth = async (args, api, extraOptions) => {
     console.log(refreshResult);
     if (refreshResult?.data) {
       console.log(refreshResult?.data?.data?.token);
-      localStorage.setItem("token", JSON.stringify(refreshResult?.data?.data?.token));
+      localStorage.setItem(
+        "token",
+        JSON.stringify(refreshResult?.data?.data?.token)
+      );
       // const user = api.getState().componentSlice.user;
       // // store the new token
       // api.dispatch(setCredentials({ ...refreshResult.data, user }));
       // // retry the original query with new access token
       result = await baseQuery(args, api, extraOptions);
     } else {
+      console.log("Reached there");
+      localStorage.removeItem("user");
+      localStorage.removeItem("token");
       api.dispatch(logout());
     }
+  }
+  if (result?.error?.status === 403) {
+    console.log("Reached there");
+    localStorage.removeItem("user");
+    localStorage.removeItem("token");
+    api.dispatch(logout());
   }
 
   return result;

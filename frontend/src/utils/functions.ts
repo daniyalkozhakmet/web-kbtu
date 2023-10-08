@@ -5,6 +5,13 @@ export const isTokenStored = () => {
   }
   return true;
 };
+export const getTokenFromLocalStorage = () => {
+  const token = localStorage.getItem("token");
+  if (token) {
+    return JSON.parse(token);
+  }
+  return null;
+};
 export const getUserFromLocalStorage = () => {
   const user = localStorage.getItem("user");
   if (user) {

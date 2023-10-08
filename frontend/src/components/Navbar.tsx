@@ -1,12 +1,13 @@
 import { useEffect } from "react";
 import { Link } from "react-router-dom";
 
-import { useAppSelector } from "../hooks/userHook";
+import { useAppDispatch, useAppSelector } from "../hooks/userHook";
 import { useLogoutMutation } from "../redux/api/authApi";
 import { BsCart2 } from "react-icons/bs";
 
 const Navbar = () => {
   const { user } = useAppSelector((state) => state.user);
+  const dispatch=useAppDispatch()
   const {
     cart: { totalQty },
   } = useAppSelector((state) => state.product);

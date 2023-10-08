@@ -30,6 +30,8 @@ const productApi = baseApi.injectEndpoints({
       transformResponse: (result: productsDataType) => result,
       async onQueryStarted(args, { dispatch, queryFulfilled }) {
         try {
+          console.log('Getting products');
+          
           const { data } = await queryFulfilled;
           dispatch(setProducts(data));
         } catch (error) {}

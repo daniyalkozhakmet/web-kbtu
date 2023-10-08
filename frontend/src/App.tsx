@@ -7,6 +7,9 @@ import { Layout } from "./components/Layout";
 import { ProductByCategoryPage } from "./pages/ProductsByCategoryPage";
 import { ProductPage } from "./pages/ProductPage";
 import { useLazyGetProductsQuery } from "./redux/api/productApi";
+import { CartPage } from "./pages/CartPage";
+import { CheckoutPage } from "./pages/CheckoutPage";
+import { ProtectedRoute } from "./utils/ProtectedRoute";
 
 function App() {
   const [getProducts] = useLazyGetProductsQuery();
@@ -21,6 +24,16 @@ function App() {
         <Route path="register" element={<RegisterPage />} />
         <Route path="products/:id" element={<ProductPage />} />
         <Route path="categories/:id" element={<ProductByCategoryPage />} />
+        <Route
+          path="checkout"
+          element={
+            <ProtectedRoute>
+              <CheckoutPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route path="cart" element={<CartPage />} />
+
         <Route path="*" element={<Navigate to="/" replace />} />
       </Route>
     </Routes>

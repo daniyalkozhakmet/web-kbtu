@@ -1,11 +1,11 @@
 import { IUser } from "../../shared/interfaces/auth";
-import { logout, setUser } from "../features/userSlice";
+import { logout, setToken, setUser } from "../features/userSlice";
 import { baseApi, getTokenFromLocalStorage } from "./baseApi";
 
 const authApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
-    login: builder.mutation({
-      query: (user: { email: string; password: string }) => ({
+    login: builder.mutation<IUser, { email: string; password: string }>({
+      query: (user) => ({
         url: "/login",
         method: "POST",
         body: user,
@@ -20,9 +20,17 @@ const authApi = baseApi.injectEndpoints({
       async onQueryStarted(args, { dispatch, queryFulfilled }) {
         try {
           const { data } = await queryFulfilled;
-          localStorage.setItem("user", JSON.stringify(data));
+          dispatch(setToken({ token: data.token }));
           localStorage.setItem("token", JSON.stringify(data.token));
-          dispatch(setUser(data));
+          console.log("Setting token");
+
+          if (data.verified) {
+            localStorage.setItem("user", JSON.stringify(data));
+
+            dispatch(setUser(data));
+          } else {
+            dispatch(logout());
+          }
         } catch (error) {}
       },
     }),
@@ -62,8 +70,6 @@ const authApi = baseApi.injectEndpoints({
           "Content-Type": `application/json`,
         },
       }),
-
-
       // transformResponse: (result) => console.log(result),
       async onQueryStarted(_, { dispatch }) {
         try {
@@ -73,8 +79,32 @@ const authApi = baseApi.injectEndpoints({
         }
       },
     }),
+    verifyEmail: builder.query({
+      query: () => ({
+        url: "/email/resend",
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${getTokenFromLocalStorage()}`,
+          Accept: `application/json`,
+          "Content-Type": `application/json`,
+        },
+      }),
+      transformResponse: (result) => result,
+      async onQueryStarted(args, { dispatch, queryFulfilled }) {
+        try {
+          console.log((await queryFulfilled).data);
+          // dispatch(logout());
+        } catch (error) {
+          console.log(error);
+        }
+      },
+    }),
   }),
   overrideExisting: false,
 });
-export const { useLoginMutation, useRegisterMutation, useLogoutMutation } =
-  authApi;
+export const {
+  useLoginMutation,
+  useRegisterMutation,
+  useLogoutMutation,
+  useLazyVerifyEmailQuery,
+} = authApi;

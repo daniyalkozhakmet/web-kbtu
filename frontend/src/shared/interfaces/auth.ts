@@ -2,5 +2,6 @@ export type IUser={
     firstName:string;
     lastName:string;
     email:string;
-    token:string
+    token:string,
+    verified:boolean
 }

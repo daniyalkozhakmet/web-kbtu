@@ -1,10 +1,14 @@
 <?php
 
+use App\Http\Controllers\Auth\EmailVerificationPromptController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\VerificationController;
+use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -35,7 +39,7 @@ Route::prefix('categories')->group(function () {
 
 
 Route::middleware(['auth:sanctum'])->group(function () {
-
+    Route::get('email/resend', [VerificationController::class, 'resend'])->name('verification.resend');
     Route::post('/logout', [AuthController::class, 'logout']);
     Route::post('/comment/{product_id}', [CommentController::class, 'createComment']);
     Route::get('/user', function (Request $request) {

@@ -1,14 +1,32 @@
 import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { useLoginMutation } from "../redux/api/authApi";
+import {
+  useLazyVerifyEmailQuery,
+  useLoginMutation,
+} from "../redux/api/authApi";
 import Alert from "../components/Alert";
+import { useAppDispatch, useAppSelector } from "../hooks/userHook";
+import { logout } from "../redux/features/userSlice";
 type userType = {
   email: string;
   password: string;
 };
 export const LoginPage = () => {
   const [login, { isLoading, isError, error, isSuccess }] = useLoginMutation();
+  const [
+    verifyEmail,
+    {
+      data: dataEmail,
+      isLoading: isLoadingEmail,
+      error: errorEmail,
+      isError: isErrorEmail,
+      isSuccess: isSuccessEmail,
+    },
+  ] = useLazyVerifyEmailQuery();
+  const [emailMessage, setEmailMessage] = useState("");
+  const { user: userState, token } = useAppSelector((state) => state.user);
   const navigate = useNavigate();
+  const dispatch = useAppDispatch();
   const [user, setUser] = useState<userType>({
     email: "",
     password: "",
@@ -53,11 +71,34 @@ export const LoginPage = () => {
     }
   }, [isLoading]);
   useEffect(() => {
-    if (isSuccess) navigate("/");
-  }, [isSuccess]);
+    if (isSuccess) {
+      console.log("Not verified", userState, token);
+      if (userState == null && token) {
+        console.log("Not verified", userState, token);
+        verifyEmail("");
+        // localStorage.removeItem("us ser");
+        // localStorage.removeItem("token");
+        // dispatch(logout());
+
+        console.log("We send verification link to your email, please verify");
+      }
+      if (userState) {
+        navigate("/");
+      }
+    }
+  }, [isSuccess, token]);
+  useEffect(() => {
+    if (isSuccessEmail) {
+      setEmailMessage(dataEmail.msg);
+    }
+  }, [isSuccessEmail]);
   return (
     <div className="container w-75 my-4">
       <h1>Login</h1>
+      {isSuccessEmail && (
+        <Alert className="warning" message={dataEmail.msg as string} />
+      )}
+
       {errorMessages.length > 0 &&
         errorMessages.map((err, index) => (
           <Alert className="danger" key={index} message={err} />

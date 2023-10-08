@@ -3,6 +3,7 @@ import Navbar from "../components/Navbar";
 import {
   useGetCategoriesQuery,
   useGetProductsQuery,
+  useLazyGetProductsQuery,
 } from "../redux/api/productApi";
 import { Spinner } from "../components/Spinner";
 import Alert from "../components/Alert";
@@ -14,6 +15,7 @@ import CategoryCart from "../components/CategoryCart";
 
 export const Home = () => {
   const { isLoading, isError, error, isSuccess } = useGetProductsQuery("");
+  const [getProducts] = useLazyGetProductsQuery();
   const {
     isLoading: isLoadingCategory,
     isError: isErrorCategory,
@@ -56,6 +58,9 @@ export const Home = () => {
         {meta && <Pagination meta={meta} paginateWhat="products" />}
       </>
     );
+  useEffect(() => {
+    getProducts("");
+  }, []);
   return (
     <div className="container">
       <CartCanvas />
