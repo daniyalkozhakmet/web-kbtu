@@ -11,11 +11,13 @@ use Tests\TestCase;
 
 class ProductTest extends TestCase
 {
+    use RefreshDatabase;
     /**
      * A basic feature test example.
      */
     public function test_get_products(): void
     {
+        $this->withoutExceptionHandling();
         $this->get('api/products')
             ->assertJsonStructure(
                 [
@@ -41,7 +43,7 @@ class ProductTest extends TestCase
     }
     public function test_get_product_by_id(): void
     {
-        $product = Product::create(Product::factory()->make());
+        $product = Product::create(Product::factory()->make()->getAttributes());
         $category = Category::create([
             'name' => 'Smartphones',
             'image' => 'storage/categories/smartphone.webp'
@@ -49,22 +51,29 @@ class ProductTest extends TestCase
         $product->categories()->attach(
             $category->pluck('id')->toArray()
         );
-        $this->get('api/products/' . $product->id)
-            ->assertJsonStructure(
+
+        $this->get("api/products/$product->id")
+            ->assertExactJson(
                 [
                     'data' =>  [
                         'id' => $product->id,
                         'name' => $product->name,
                         'image' => $product->image,
                         'price' => $product->price,
-                        'rating',
-                        'description',
+                        'rating' => $product->rating,
+                        'description' => $product->description,
                         'categories' => [
-                            '*' => [
-                                "id",
-                                "name",
-                                "image",
+                            [
+                                "id" => $product->categories[0]->id,
+                                "name" => $product->categories[0]->name,
+                                "image" => $product->categories[0]->image,
                             ]
+                        ],
+                        "comments" => [],
+                        "meta" => [
+                            "current_page" => 1,
+                            "per_page" => 2,
+                            "total_page" => 0
                         ]
                     ]
 

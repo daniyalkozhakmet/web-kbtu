@@ -7,9 +7,13 @@ use Illuminate\Database\Eloquent\Model;
 
 class Product extends Model
 {
+
     use HasFactory;
     protected $table = 'products';
     protected $appends = ['rating'];
+    protected $guarded = [];
+
+
     public function categories()
     {
         return $this->belongsToMany(Category::class, 'category_product');
