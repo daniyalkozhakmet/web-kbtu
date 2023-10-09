@@ -20,12 +20,9 @@ const baseQuery = fetchBaseQuery({
 const baseQueryWithReauth = async (args, api, extraOptions) => {
   let result = await baseQuery(args, api, extraOptions);
   if (result?.error?.status === 401) {
-    console.log("sending refresh token!!!!");
     // send refresh token to get new access token
     const refreshResult = await baseQuery("/refresh", api, extraOptions);
-    console.log(refreshResult);
     if (refreshResult?.data) {
-      console.log(refreshResult?.data?.data?.token);
       localStorage.setItem(
         "token",
         JSON.stringify(refreshResult?.data?.data?.token)
@@ -36,14 +33,12 @@ const baseQueryWithReauth = async (args, api, extraOptions) => {
       // // retry the original query with new access token
       result = await baseQuery(args, api, extraOptions);
     } else {
-      console.log("Reached there");
       localStorage.removeItem("user");
       localStorage.removeItem("token");
       api.dispatch(logout());
     }
   }
   if (result?.error?.status === 403) {
-    console.log("Reached there");
     localStorage.removeItem("user");
     localStorage.removeItem("token");
     api.dispatch(logout());

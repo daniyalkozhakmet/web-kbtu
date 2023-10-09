@@ -49,9 +49,9 @@ class AuthController extends Controller
             'lastName' => $request->lastName,
             'email' => $request->email,
             'password' => Hash::make($request->password),
-        ])->sendEmailVerificationNotification();
+        ]);
         $user->roles()->attach(Role::where('name', 'USER')->first());
-        event(new Registered($user));
+        
         return new UserResource($user);
     }
     /**

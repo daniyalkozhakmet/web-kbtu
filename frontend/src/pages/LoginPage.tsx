@@ -12,7 +12,8 @@ type userType = {
   password: string;
 };
 export const LoginPage = () => {
-  const [login, { isLoading, isError, error, isSuccess }] = useLoginMutation();
+  const [login, { isLoading, isError, error, isSuccess, data }] =
+    useLoginMutation();
   const [
     verifyEmail,
     {
@@ -25,6 +26,7 @@ export const LoginPage = () => {
   ] = useLazyVerifyEmailQuery();
   const [emailMessage, setEmailMessage] = useState("");
   const { user: userState, token } = useAppSelector((state) => state.user);
+
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const [user, setUser] = useState<userType>({
@@ -72,9 +74,9 @@ export const LoginPage = () => {
   }, [isLoading]);
   useEffect(() => {
     if (isSuccess) {
-      console.log("Not verified", userState, token);
-      if (userState == null && token) {
-        console.log("Not verified", userState, token);
+      console.log("Not verified", userState, data?.token);
+      if (userState == null && data?.token) {
+        console.log("Not verified", userState, data?.token);
         verifyEmail("");
         // localStorage.removeItem("us ser");
         // localStorage.removeItem("token");
@@ -87,16 +89,27 @@ export const LoginPage = () => {
       }
     }
   }, [isSuccess, token]);
+
   useEffect(() => {
     if (isSuccessEmail) {
       setEmailMessage(dataEmail.msg);
     }
   }, [isSuccessEmail]);
+  const resendEmailHandler = () => {
+    verifyEmail("");
+  };
   return (
     <div className="container w-75 my-4">
       <h1>Login</h1>
       {isSuccessEmail && (
-        <Alert className="warning" message={dataEmail.msg as string} />
+        <Alert className="warning" message={dataEmail.msg as string}>
+          <button
+            className="btn btn-warning"
+            onClick={() => resendEmailHandler()}
+          >
+            Send Again
+          </button>
+        </Alert>
       )}
 
       {errorMessages.length > 0 &&

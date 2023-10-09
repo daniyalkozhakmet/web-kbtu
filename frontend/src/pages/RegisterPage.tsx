@@ -14,9 +14,9 @@ type userType = {
   lastName: string;
 };
 export const RegisterPage = () => {
-  const [register, { isLoading, isError, error, isSuccess }] =
+  const [register, { isLoading, isError, error, isSuccess, data }] =
     useRegisterMutation();
-  const { user: userState } = useAppSelector((state) => state.user);
+  const { user: userState, token } = useAppSelector((state) => state.user);
   const [
     verifyEmail,
     {
@@ -36,6 +36,7 @@ export const RegisterPage = () => {
     password_confirmation: "",
   });
   let [errorMessages, setErrorMessages] = useState<string[]>([]);
+  const [emailMessage, setEmailMessage] = useState("");
   const submitHandler = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     register(user);
@@ -89,22 +90,44 @@ export const RegisterPage = () => {
   }, [isLoading]);
   useEffect(() => {
     if (isSuccess) {
-      if (userState?.verified == false) {
-        console.log("Not verified", !userState?.verified);
+      console.log("Not verified", userState, data?.token);
+      if (userState == null && data?.token) {
+        console.log("Not verified", userState, data?.token);
         verifyEmail("");
         // localStorage.removeItem("us ser");
         // localStorage.removeItem("token");
         // dispatch(logout());
 
-        alert("We send verification link to your email, please verify");
-      } else {
+        console.log("We send verification link to your email, please verify");
+      }
+      if (userState) {
         navigate("/");
       }
     }
-  }, [isSuccess]);
+  }, [isSuccess, token]);
+
+  useEffect(() => {
+    if (isSuccessEmail) {
+      setEmailMessage(dataEmail.msg);
+    }
+  }, [isSuccessEmail]);
+
+  const resendEmailHandler = () => {
+    verifyEmail("");
+  };
   return (
     <div className="container w-75 my-4">
       <h1>Register</h1>
+      {isSuccessEmail && (
+        <Alert className="warning" message={dataEmail.msg as string}>
+          <button
+            className="btn btn-warning"
+            onClick={() => resendEmailHandler()}
+          >
+            Send Again
+          </button>
+        </Alert>
+      )}
       {errorMessages.length > 0 &&
         errorMessages.map((err, index) => (
           <Alert className="danger" key={index} message={err} />

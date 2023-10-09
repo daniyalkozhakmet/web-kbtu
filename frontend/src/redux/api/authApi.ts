@@ -54,9 +54,20 @@ const authApi = baseApi.injectEndpoints({
       async onQueryStarted(args, { dispatch, queryFulfilled }) {
         try {
           const { data } = await queryFulfilled;
-          localStorage.setItem("user", JSON.stringify(data));
+          dispatch(setToken({ token: data.token }));
           localStorage.setItem("token", JSON.stringify(data.token));
-          dispatch(setUser(data));
+          console.log("Setting token");
+
+          if (data.verified) {
+            localStorage.setItem("user", JSON.stringify(data));
+
+            dispatch(setUser(data));
+          } else {
+            dispatch(logout());
+          }
+          // localStorage.setItem("user", JSON.stringify(data));
+          // localStorage.setItem("token", JSON.stringify(data.token));
+          // dispatch(setUser(data));
         } catch (error) {}
       },
     }),

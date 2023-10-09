@@ -30,7 +30,6 @@ const productApi = baseApi.injectEndpoints({
       transformResponse: (result: productsDataType) => result,
       async onQueryStarted(args, { dispatch, queryFulfilled }) {
         try {
-          console.log('Getting products');
           
           const { data } = await queryFulfilled;
           dispatch(setProducts(data));
@@ -56,7 +55,6 @@ const productApi = baseApi.injectEndpoints({
       async onQueryStarted(args, { dispatch, queryFulfilled }) {
         try {
           const { data } = await queryFulfilled;
-          console.log(data);
           dispatch(setProduct(data));
         } catch (error) {}
       },
@@ -93,10 +91,10 @@ const productApi = baseApi.injectEndpoints({
       async onQueryStarted(args, { dispatch, queryFulfilled }) {
         try {
           const { data } = await queryFulfilled;
-          console.log("Helllo");
+
           dispatch(setProducts(data));
         } catch (error) {
-          console.log(error);
+
         }
       },
     }),
