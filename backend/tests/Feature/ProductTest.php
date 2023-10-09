@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Models\Category;
 use App\Models\Product;
 use Illuminate\Http\Response;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -41,14 +42,21 @@ class ProductTest extends TestCase
     public function test_get_product_by_id(): void
     {
         $product = Product::create(Product::factory()->make());
+        $category = Category::create([
+            'name' => 'Smartphones',
+            'image' => 'storage/categories/smartphone.webp'
+        ]);
+        $product->categories()->attach(
+            $category->pluck('id')->toArray()
+        );
         $this->get('api/products/' . $product->id)
             ->assertJsonStructure(
                 [
                     'data' =>  [
-                        'id',
-                        'name',
-                        'image',
-                        'price',
+                        'id' => $product->id,
+                        'name' => $product->name,
+                        'image' => $product->image,
+                        'price' => $product->price,
                         'rating',
                         'description',
                         'categories' => [
