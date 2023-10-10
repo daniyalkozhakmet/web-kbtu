@@ -17,7 +17,14 @@ class ProductTest extends TestCase
      */
     public function test_get_products(): void
     {
-        $this->withoutExceptionHandling();
+        $product = Product::create(Product::factory()->make()->getAttributes());
+        $category = Category::create([
+            'name' => 'Smartphones',
+            'image' => 'storage/categories/smartphone.webp'
+        ]);
+        $product->categories()->attach(
+            $category->pluck('id')->toArray()
+        );
         $this->get('api/products')
             ->assertJsonStructure(
                 [
