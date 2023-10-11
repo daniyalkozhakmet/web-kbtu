@@ -14,14 +14,15 @@ class UserResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
+        $isAdmin = $this->roles->contains(function ($value, int $key) {
+            return $value->name == 'ADMIN';
+        });
         return [
             'firstName' => $this->firstName,
             'lastName' => $this->lastName,
             'email' => $this->email,
-            'role' => $this->roles,
-            'verified' => $this->email_verified_at!=null ? true : false,
-            'token' => $this->createToken('access')->plainTextToken
+            'verified' => $this->email_verified_at != null ? true : false,
+            'token' => $this->createToken('access', $isAdmin ? ['server:admin'] : ['server:user'])->plainTextToken
         ];
-
     }
 }

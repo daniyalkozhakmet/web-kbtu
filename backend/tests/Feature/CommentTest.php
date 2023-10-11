@@ -24,7 +24,7 @@ class CommentTest extends TestCase
             ['*']
         );
         $payload = [
-            'body' => 'body',
+            'body' => 'bodybody',
             'rating'  => 5,
             'user_id'      => 1,
             'product_id'      => 1

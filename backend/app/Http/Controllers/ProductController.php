@@ -35,13 +35,10 @@ class ProductController extends Controller
     }
     public function getProductById(String $id)
     {
-        try {
-            $product = Product::where('id', $id)->first();
-            // $product->comments = $this->comment->getCommentByProduct($product->id);
-            return new ProductWithCommentResource($product);
-        } catch (Exception $e) {
-            $this->error_handler('Product with that id does not exist', 400);
-        }
+
+        $product = Product::where('id', $id)->first();
+        // $product->comments = $this->comment->getCommentByProduct($product->id);
+        return new ProductWithCommentResource($product);
     }
     public function createProduct()
     {
