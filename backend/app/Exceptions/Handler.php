@@ -6,6 +6,7 @@ use Error;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Laravel\Sanctum\Exceptions\MissingAbilityException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Throwable;
 
@@ -32,6 +33,12 @@ class Handler extends ExceptionHandler
                 'message' => 'Data not found'
             ], 404);
         }
+        if ($exception instanceof MissingAbilityException) {
+            return response()->json([
+                'message' => 'You do not have permission'
+            ], 400);
+        }
+
         return parent::render($request, $exception);
     }
     public function register(): void

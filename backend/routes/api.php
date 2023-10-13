@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AdminController;
 use App\Http\Controllers\Auth\EmailVerificationPromptController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CategoryController;
@@ -8,6 +9,7 @@ use App\Http\Controllers\ProductController;
 use App\Http\Controllers\VerificationController;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Route;
 
@@ -45,4 +47,13 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('/user', function (Request $request) {
         return $request->user();
     });
+    // Route::post('/admin/create', [AdminController::class, 'create_product'])->middleware(['abilities:server:admin']);
 });
+Route::post('/admin/create', [AdminController::class, 'create_product']);
+Route::get(
+    '/linkstorage',
+    function () {
+        Artisan::call('storage:link'); // this will do the command line job
+    }
+
+);
