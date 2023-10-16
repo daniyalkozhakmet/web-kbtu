@@ -6,6 +6,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\UserController;
 use App\Http\Controllers\VerificationController;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use Illuminate\Http\Request;
@@ -47,13 +48,10 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('/user', function (Request $request) {
         return $request->user();
     });
-    // Route::post('/admin/create', [AdminController::class, 'create_product'])->middleware(['abilities:server:admin']);
 });
 Route::post('/admin/create', [AdminController::class, 'create_product']);
-Route::get(
-    '/linkstorage',
-    function () {
-        Artisan::call('storage:link'); // this will do the command line job
-    }
 
-);
+Route::middleware(['auth:sanctum', 'abilities:server:admin'])->group(function () {
+    Route::get('/admin/users', [UserController::class, 'get_users']);
+    Route::post('/admin/create', [AdminController::class, 'create_product']);
+});

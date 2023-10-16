@@ -21,6 +21,7 @@ class UserResource extends JsonResource
             'firstName' => $this->firstName,
             'lastName' => $this->lastName,
             'email' => $this->email,
+            'isAdmin' => $isAdmin,
             'verified' => $this->email_verified_at != null ? true : false,
             'token' => $this->createToken('access', $isAdmin ? ['server:admin'] : ['server:user'])->plainTextToken
         ];
