@@ -7,7 +7,7 @@ import { BsCart2 } from "react-icons/bs";
 
 const Navbar = () => {
   const { user } = useAppSelector((state) => state.user);
-  const dispatch=useAppDispatch()
+  const dispatch = useAppDispatch();
   const {
     cart: { totalQty },
   } = useAppSelector((state) => state.product);
@@ -22,6 +22,7 @@ const Navbar = () => {
       localStorage.removeItem("token");
     }
   }, [isLoading]);
+
   return (
     <nav className="navbar navbar-expand-lg navbar-light bg-light fixed-top">
       <div className="container">
@@ -72,6 +73,11 @@ const Navbar = () => {
               <div className="dropdown-menu" aria-labelledby="navbarDropdown">
                 {user ? (
                   <>
+                    {user.isAdmin && (
+                      <Link className="dropdown-item" to="/admin">
+                        Admin
+                      </Link>
+                    )}
                     <button className="dropdown-item" onClick={logoutHandler}>
                       Log out
                     </button>

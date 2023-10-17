@@ -25,7 +25,6 @@ const productApi = baseApi.injectEndpoints({
           "Content-Type": `application/json`,
           Accept: `application/json`,
         },
-        // responseHandler: (response) => response.text(),
       }),
       transformResponse: (result: productsDataType) => result,
       async onQueryStarted(args, { dispatch, queryFulfilled }) {
