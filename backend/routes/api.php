@@ -53,5 +53,6 @@ Route::post('/admin/create', [AdminController::class, 'create_product']);
 
 Route::middleware(['auth:sanctum', 'abilities:server:admin'])->group(function () {
     Route::get('/admin/users', [UserController::class, 'get_users']);
+    Route::get('/admin/users/{id}', [UserController::class, 'get_user_by_id']);
     Route::post('/admin/create', [AdminController::class, 'create_product']);
 });
